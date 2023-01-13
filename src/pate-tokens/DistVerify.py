@@ -1,3 +1,4 @@
+from sslib import shamir
 from Crypto.Math import _IntegerGMP
 
 def round1(B,V,key):
@@ -57,8 +58,23 @@ def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
         pk_idx = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(public_keys[str(idx)]))
         C[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
 
-    e, proof = proveS(i, tau_prime, C[i], R_i, [a_i, zeta], key)
-    result = verifyS(i, tau_prime, C[i], R_i, proof, key)
+    return (tau_prime, C[i], R_i, [a_i, zeta])
 
-    print("self verification result S {}".format(result))
-    return (proof, R_i, tau_prime, C, yg, a_i, zeta, C_bar)
+    #e, proof = proveS(i, tau_prime, C[i], R_i, [a_i, zeta], key)
+    #result = verifyS(i, tau_prime, C[i], R_i, proof, key)
+
+    #print("self verification result S {}".format(result))
+    #return (proof, R_i, tau_prime, C, yg, a_i, zeta, C_bar)
+
+def round4(key, C_bars, y_bar):
+    C_acc _IntegegerGMP.IntegerGMP(1)
+    for C_bari in C_bars:
+        C_acc.__imul__(C_bari)
+        C_acc.inplace_pow(1, key.p)
+
+    if C_acc.__eq__(y_bar):
+        print("Accept")
+        return {'result': "ACCEPT"}
+    else:
+        print("DENY")
+        return {'result' : "DENY"}
