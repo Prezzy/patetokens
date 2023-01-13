@@ -80,70 +80,15 @@ def generate_token_key():
 
 
 def generate_serialized_token(key, username, encpwd):
-    #Token = jwt.JWT(header = {"alg": "RS256"},
-    #                claims = {"username": username, "encpwd": encpwd})
     payload = {'username' : username, 'encpwd' : encpwd}
     payload = json.dumps(payload)
     Token = jws.JWS(payload.encode('utf-8'))
     Token.add_signature(key, None, json_encode({"alg": "RS256"}))
     token = Token.serialize()
-    #jwstoken = jws.JWS()
-    #jwstoken.deserialize(token)
-    #print("Token 1 claims {}".format(Token1.claims))
     return token
-    
-
-def generate_key():
-    if not os.path.exists("el-gamal-key"): #or not os.path.exists("el-gamal-key-h"):
-        print("no key generated, generating...")
-        key = ElGamal.generate(SIZE,os.urandom)
-        p_bytes_str = key.p.to_bytes().hex()
-        q_bytes_str = key.q.to_bytes().hex()
-        g_bytes_str = key.g.to_bytes().hex()
-        y_bytes_str = key.y.to_bytes().hex()
-        x_bytes_str = key.x.to_bytes().hex()
-        serialized_key = {"p": p_bytes_str, "q": q_bytes_str, "g": g_bytes_str, "y": y_bytes_str, "x": x_bytes_str}
-        with open("el-gamal-key", "w") as key_file:
-            key_file.write(json.dumps(serialized_key))
-
-
-        #keyh = ElGamal.generate(SIZE,os.urandom)
-        #p_bytes_str = key.p.to_bytes().hex()
-        #g_bytes_str = key.g.to_bytes().hex()
-        #y_bytes_str = key.y.to_bytes().hex()
-        #x_bytes_str = key.x.to_bytes().hex()
-        #serialized_key = {"p": p_bytes_str, "q": q_bytes_str, "g": g_bytes_str, "y": y_bytes_str, "x": x_bytes_str}
-        #with open("el-gamal-key-h", "w") as key_file:
-        #    key_file.write(json.dumps(serialized_key))
-
-    else:
-        print("key-exists, deserializing...")
-        with open("el-gamal-key", "r") as key_file:
-            key_json_str = key_file.read()
-
-        key_dict = json.loads(key_json_str)
-        p= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(key_dict["p"]))
-        q= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(key_dict["q"]))
-        g= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(key_dict["g"]))
-        y= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(key_dict["y"]))
-        x= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(key_dict["x"]))
-
-        key = ElGamal.construct((p,q,g,y,x))
-
-        #print("keyh-exists, deserializing...")
-        #with open("el-gamal-key-h", "r") as key_fileh:
-        #    keyh_json_str = key_fileh.read()
-
-        #keyh_dict = json.loads(keyh_json_str)
-        #h= _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(keyh_dict["g"]))
-
-        print("done with keys...")
-
-    return key
 
 
 def secret_share(key):
-    #Have not yet updated this function with new sslib
     if not os.path.exists("secret-shares"):
         x_bytes = key.x.to_bytes()
         q_bytes = key.q.to_bytes()
@@ -165,12 +110,14 @@ def secret_share(key):
             data = secret_share_file.read()
 
         shares_dict = json.loads(data)
-        sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
-        print("key.x is {}".format(key.x.to_bytes()))
-        print("sh is {}".format(sh))
-        print("sh.from_hex {}".format(shamir.from_hex(sh)))
-        secret = shamir.recover_secret(shamir.from_hex(sh))
-        print("secret is {}".format(secret))
+        
+        #FOR TEST
+        #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
+        #print("key.x is {}".format(key.x.to_bytes()))
+        #print("sh is {}".format(sh))
+        #print("sh.from_hex {}".format(shamir.from_hex(sh)))
+        #secret = shamir.recover_secret(shamir.from_hex(sh))
+        #print("secret is {}".format(secret))
 
     return shares_dict
 
