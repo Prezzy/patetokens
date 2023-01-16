@@ -1,4 +1,4 @@
-from Crypto.Math import _IntegerGMP, Primality
+from Crypto.Math import _IntegerGMP
 
 
 class Cipher:
@@ -88,18 +88,6 @@ class Cipher:
                 traceback.print_exc()
                 exit()
 
-    def decrypt(self, message):
-        temp_b = self.b.__pow__(self.key.x,self.key.p)
-        inv_temp_b = temp_b.inverse(self.key.p)
-
-
-        result = self.a.__mul__(inv_temp_b)
-        result.inplace_pow(1,self.key.p)
-        compare = self.key.g.__pow__(message, self.key.p)
-
-        print("Decryption found matching is {} and {}, {}".format(result == compare, result, compare))
-
-
     
     def get_bytes(self):
         a_str = self.a.to_bytes()
@@ -111,15 +99,10 @@ class Cipher:
         b_str = self.b.to_bytes().hex()
         return a_str + ',' + b_str
 
-    def finalR(cipher,e):
-        cipher.iexp(e,self.key.p)
-        cipher.iinverse(self.key.p)
-        self.imul(cipher)
+    def cipher_from_string(self, cipher_string, key):
+        (a_str, b_str) = cipher_string.split(',')
 
-def cipher_from_string(cipher_string, key):
-    (a_str, b_str) = cipher_string.split(',')
-
-    a = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(a_str))
-    b = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(b_str))
-
-    return Cipher(a,b,key)
+        self.a = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(a_str))
+        self.b = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(b_str))
+        self.key = key
+        #return Cipher(a,b,key)
