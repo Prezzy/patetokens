@@ -125,11 +125,13 @@ class FullKey(Key):
         self.group_pks = public_keys
 
 
-    def export_key_shares(self, idx):
+    def export_veri_key(self, idx):
         if idx not in self.group_idxs:
             print("invalid idx")
             return "Error"
-        return DistributedKey(self.x_shares[idx], self.group_pks)
+        veri_key = DistributedKey(self.x_shares[idx], self.group_pks)
+        return veri_key.export(False)
+
 
 
     def from_json(self, json_keys):
