@@ -1,4 +1,5 @@
 from sslib import shamir
+from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -17,30 +18,56 @@ prime_q_2048 = (prime_p_2048-1)/2
 
 class Key:
     def __init__(self):
-        self.p = prime_p_2048
-        self.q = prime_q_2048
-        self.g = 2
+        self.p = IntGMP(prime_p_2048)
+        self.q = IntGMP(prime_q_2048)
+        self.g = IntGMP(2)
         self.x = None
         self.y = None
             
-    def from_json(self, json_obj):
-    	pass
+    def from_json(self, json_keys):
+    	self.p = IntGMP.from_bytes(json_keys['p'])
+        self.q = IntGMP.from_bytes(json_keys['q'])
+        self.g = IntGMP.from_bytes(json_keys['g'])
+        self.y = IntGMP.from_bytes(json_keys['y'])
+
+        if 'x' in json_keys.keys():
+            self.x = IntGMP.from_bytes(json_keys['x'])
     	
-    def export_public_keys(self):
-    	pass
+    def export_keys(self, Public=True):
+    	json_keys = {
+                'p': self.p.to_bytes(),
+                'q': self.q.to_bytes(),
+                'g': self.g.to_bytes(),
+                'y': self.y.to_bytes(),
+                }
+        if not Public:
+            json_keys['x'] = self.x.to_bytes()
+
+        return json_keys
 
 
 class DistributedKey(Key):
-    def __init__(self, x_share, group_keys):
+    def __init__(self, x_share, group_pks):
         super.__init__():
         self.x_share = x_share
-        self.group_pkeys = group_keys
+        self.group_pks = group_pks
         
-    def from_json():
-        pass
+    def from_json(self, json_keys):
+        super(DistributedKey, self).from_json(json_keys)
+        self.x_share = json_keys['x-shares']
 
-    def export():
-        pass
+        #uppack group-pks from bytes to IntGMP
+        self.group_pks = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['group-pks'],items()))
+
+    def export(self, Public=True):
+        json_keys = super(DistributedKey, self).export(Public)
+        json_keys['group-pks'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.group_pks.items()))
+        if not Public:
+            json_keys['x-share'] = self.x_share.to_bytes()
+        return export
+
+
+        
 
 class FullKey(Key):
     def __init__(self, group_idxs):
@@ -97,5 +124,25 @@ class FullKey(Key):
 
         self.group_pks = public_keys
 
-    def export_key_veri():
-        pass
+
+    def export_key_shares(self, idx):
+        if idx not in self.group_idxs:
+            print("invalid idx")
+            return "Error"
+        return DistributedKey(self.x_shares[idx], self.group_pks)
+
+
+    def from_json(self, json_keys):
+        super(DistributedKey, self).from_json(json_keys)
+        self.group_idxs = json_keys['group-idxs']
+        #uppack group-pks from bytes to IntGMP
+        self.x_shares = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['x-shares'].items()))
+        self.group_pks = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['group-pks'],items()))
+
+    def export(self, Public=True):
+        json_keys = super(DistributedKey, self).export(Public)
+        json_keys = ['group-idxs']
+        json_keys['group-pks'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.group_pks.items()))
+        if not Public:
+            json_keys['x-shares'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.x_shares.items()))
+        return json_keys
