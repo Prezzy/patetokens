@@ -1,5 +1,9 @@
+import os
 from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
+
+TOTAL = 2
+THRESHOLD = 2
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -13,20 +17,21 @@ hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "DE2BCBF6 95581718 3995497C EA956AE5 15D22618 98FA0510"
       "15728E5A 8AACAA68 FFFFFFFF FFFFFFFF")
 
-prime_p_2048 = int(hex_string_p.replace(" ", ""), 16)
-prime_q_2048 = (prime_p_2048-1)/2
+prime_p_2048 = IntGMP(int(hex_string_p.replace(" ", ""), 16))
+prime_q_2048_temp = prime_p_2048.__sub__(1)
+prime_q_2048 = prime_q_2048_temp.__floordiv__(2)
 
 class Key:
     def __init__(self):
-        self.p = IntGMP(prime_p_2048)
-        self.q = IntGMP(prime_q_2048)
+        self.p = prime_p_2048
+        self.q = prime_q_2048
         self.g = IntGMP(2)
         self.x = None
         self.y = None
         self.group_pks = None
             
     def from_json(self, json_keys):
-    	self.p = utils.b64str_to_gmp(json_keys['p'])
+        self.p = utils.b64str_to_gmp(json_keys['p'])
         self.q = utils.b64str_to_gmp(json_keys['q'])
         self.g = utils.b64str_to_gmp(json_keys['g'])
         self.y = utils.b64str_to_gmp(json_keys['y'])
@@ -38,8 +43,8 @@ class Key:
     def export_keys(self, Public=True):
         if self.y is None:
             print("key is not set yet")
-        return None
-    	json_keys = {
+            return None
+        json_keys = {
                 'p': utils.gmp_to_b64str(self.p),
                 'q': utils.gmp_to_b64str(self.q),
                 'g': utils.gmp_to_b64str(self.g),
@@ -57,7 +62,7 @@ class Key:
 
 class DistributedKey(Key):
     def __init__(self, x_share, group_pks):
-        super.__init__():
+        super.__init__()
         self.x_share = x_share
         
     def from_json(self, json_keys):
@@ -83,19 +88,19 @@ class FullKey(Key):
 
 
     def generate_key(self):
-        N = _IntegerGMP.IntegerGMP(256)
-        one = _IntegerGMP.IntegerGMP(1)
+        N = IntGMP(256)
+        #one = IntGMP(1)
         returned_bits = os.urandom(40)
-        integer = _IntegerGMP.IntegerGMP.from_bytes(returned_bits)
-        temp = self.p.__sub__(one)
+        integer = IntGMP.from_bytes(returned_bits)
+        temp = self.p.__sub__(1)
         temp2 = temp.__floordiv__(2)
-        x_max_bits = _IntegerGMP.IntegerGMP(2**256)
+        x_max_bits = IntGMP(2**256)
         if x_max_bits.__le__(self.q):
             M = x_max_bits
         else:
             M = self.q
-        self.x = integer.__pow__(1, M.__isub__(one))
-        self.x.__iadd__(one)
+        self.x = integer.__pow__(1, M.__isub__(1))
+        self.x.__iadd__(1)
         self.y = self.g.__pow__(self.x, self.p)
 
         x_hex = self.x.to_bytes().hex()
@@ -109,7 +114,7 @@ class FullKey(Key):
         shares_dict = {}
         for share in secrets['shares']:
             (idx, share) = share.split("-")
-            shares_dict[idx] = share
+            shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
         
         self.x_shares = shares_dict
         #FOR TEST
