@@ -80,7 +80,7 @@ def make_token(key, username, pwd):
     return token
 
 
-def prep_token(nonces, token, key):
+def prep_token(token, key, pwd):
 
     dic = json.loads(token)
     padding = '=' * (4 - len(dic['payload']) % 4)
@@ -102,15 +102,4 @@ def prep_token(nonces, token, key):
     public = (encpwd, B, V)
     private = (beta, pwd, gamma)
 
-    proof = NIZK.proveQ(nonces, public, private, key)
-
-    #print("Verifier result {}".format(NIZK.verifyQ(nonces, public, proof, key)))
-
-    proof = .proof_to_dict(proof)
-
-    print("proof user {}".format(proof))
-
-    request = {'ssid': ssid, 'package': {'token': token, 'B': B.get_string(), 'V': V.get_string(), 'proof':proof, 'y': y.to_bytes().hex()}}
-
-
-    r = requests.post('http://127.0.0.1:5000/authenticate', json=request)
+    return public, private

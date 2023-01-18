@@ -23,25 +23,34 @@ class Key:
         self.g = IntGMP(2)
         self.x = None
         self.y = None
+        self.group_pks = None
             
     def from_json(self, json_keys):
-    	self.p = IntGMP.from_bytes(json_keys['p'])
-        self.q = IntGMP.from_bytes(json_keys['q'])
-        self.g = IntGMP.from_bytes(json_keys['g'])
-        self.y = IntGMP.from_bytes(json_keys['y'])
-
+    	self.p = utils.b64str_to_gmp(json_keys['p'])
+        self.q = utils.b64str_to_gmp(json_keys['q'])
+        self.g = utils.b64str_to_gmp(json_keys['g'])
+        self.y = utils.b64str_to_gmp(json_keys['y'])
+        #uppack group-pks from bytes to IntGMP
+        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'],items()))
         if 'x' in json_keys.keys():
-            self.x = IntGMP.from_bytes(json_keys['x'])
+            self.x = utils.b64str_to_gmp(json_keys['x'])
     	
     def export_keys(self, Public=True):
+        if self.y is None:
+            print("key is not set yet")
+        return None
     	json_keys = {
-                'p': self.p.to_bytes(),
-                'q': self.q.to_bytes(),
-                'g': self.g.to_bytes(),
-                'y': self.y.to_bytes(),
+                'p': utils.gmp_to_b64str(self.p),
+                'q': utils.gmp_to_b64str(self.q),
+                'g': utils.gmp_to_b64str(self.g),
+                'y': utils.gmp_to_b64str(self.y),
+                'group-pks' : dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.group_pks.items())),
                 }
         if not Public:
-            json_keys['x'] = self.x.to_bytes()
+            try:
+                json_keys['x'] = utils.gmp_to_b64str(self.x)
+            except:
+                print("trying to extract private key but there was an error")
 
         return json_keys
 
@@ -50,20 +59,17 @@ class DistributedKey(Key):
     def __init__(self, x_share, group_pks):
         super.__init__():
         self.x_share = x_share
-        self.group_pks = group_pks
         
     def from_json(self, json_keys):
         super(DistributedKey, self).from_json(json_keys)
         self.x_share = json_keys['x-shares']
-
         #uppack group-pks from bytes to IntGMP
         self.group_pks = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['group-pks'],items()))
 
     def export(self, Public=True):
         json_keys = super(DistributedKey, self).export(Public)
-        json_keys['group-pks'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.group_pks.items()))
         if not Public:
-            json_keys['x-share'] = self.x_share.to_bytes()
+            json_keys['x-share'] = utils.gmp_to_b64str(self.x_share)
         return export
 
 
@@ -74,7 +80,6 @@ class FullKey(Key):
         super().__init__()
         self.group_idxs = group_idxs
         self.x_shares = None
-        self.group_pks = None
 
 
     def generate_key(self):
@@ -118,9 +123,9 @@ class FullKey(Key):
     def gen_ver_pks(self):
         public_keys = {}
         for idx in self.x_shares:
-            share = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(self.x_shares[idx]))
+            share = self.x_shares[idx]
             pub_key = self.g.__pow__(share, self.p)
-            public_keys[idx] = pub_key.to_bytes().hex()
+            public_keys[idx] = pub_key
 
         self.group_pks = public_keys
 
@@ -138,13 +143,11 @@ class FullKey(Key):
         super(DistributedKey, self).from_json(json_keys)
         self.group_idxs = json_keys['group-idxs']
         #uppack group-pks from bytes to IntGMP
-        self.x_shares = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['x-shares'].items()))
-        self.group_pks = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['group-pks'],items()))
+        self.x_shares = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['x-shares'].items()))
 
     def export(self, Public=True):
-        json_keys = super(DistributedKey, self).export(Public)
+        json_keys = super(FullKey, self).export(Public)
         json_keys = ['group-idxs']
-        json_keys['group-pks'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.group_pks.items()))
         if not Public:
-            json_keys['x-shares'] = dict(map(lambda keyi: (keyi[0], IntGMP.to_bytes(keyi[1])), self.x_shares.items()))
+            json_keys['x-shares'] = dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.x_shares.items()))
         return json_keys

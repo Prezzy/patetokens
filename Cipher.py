@@ -1,4 +1,4 @@
-from Crypto.Math import _IntegerGMP
+from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 
 
 class Cipher:
@@ -89,20 +89,19 @@ class Cipher:
                 exit()
 
     
-    def get_bytes(self):
+    def export_bytes(self):
         a_str = self.a.to_bytes()
         b_str = self.b.to_bytes()
         return a_str+b_str
 
-    def get_string(self):
-        a_str = self.a.to_bytes().hex()
-        b_str = self.b.to_bytes().hex()
+    def export_b64str(self):
+        a_str = utils.gmp_to_b64str(self.a)
+        b_str = utils.gmp_to_b64str(self.b)
         return a_str + ',' + b_str
 
-    def cipher_from_string(self, cipher_string, key):
+    def from_b64str(self, cipher_string, key):
         (a_str, b_str) = cipher_string.split(',')
 
-        self.a = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(a_str))
-        self.b = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(b_str))
+        self.a = utils.b64str_to_gmp(a_str)
+        self.b = utils.b64str_to_gmp(b_str)
         self.key = key
-        #return Cipher(a,b,key)

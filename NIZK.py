@@ -1,5 +1,5 @@
 import json
-from Crypto.Math import _IntegerGMP
+from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.Hash import KangarooTwelve as K12
 
 #public values Ec (enc pwd), B, V
@@ -38,13 +38,21 @@ def proveQ(nonces, public, private, key):
 
     hash_bytes = H3.read(256)
     
-    e = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    e = IntGMP.from_bytes(hash_bytes)
 
     e.inplace_pow(1,key.p)
 
     z = [e]
     for i in range(len(private)):
         z.append(mul_add_mod(private[i],e,rand[i],key))
+
+    
+    proof = {
+            'e':utils.gmp_to_b64str(e),
+            'z1': utils.gmp_to_b64str(z[1]),
+            'z2': utils.gmp_to_b64str(z[2]),
+            'z3': utils.gmp_to_b64str(z[3]),
+            }
 
     return (z)
     
@@ -55,10 +63,10 @@ def verifyQ(nonces, public, proof, key):
 
     H3 = K12.new(custom=b'Q')
 
-    e = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['e']))
-    z1 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z1']))
-    z2 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z2']))
-    z3 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z3']))
+    e = utils.b64str_to_gmp(proof['e'])
+    z1 = utils.b64str_to_gmp(proof['z1'])
+    z2 = utils.b64str_to_gmp(proof['z2'])
+    z3 = utils.b64str_to_gmp(proof['z3'])
 
     #B' as B1
     B1 = Cipher(key=key)
@@ -91,7 +99,7 @@ def verifyQ(nonces, public, proof, key):
     H3.update(hash_input)
     hash_bytes = H3.read(256)
     
-    hsh = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    hsh = IntGMP.from_bytes(hash_bytes)
 
     hsh.inplace_pow(1,key.p)
 
@@ -143,7 +151,7 @@ def proveR(i, ciphers, randomness, key):
 
     H4.update(hash_input)
     hash_bytes = H4.read(256)
-    e = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    e = IntGMP.from_bytes(hash_bytes)
 
     e.inplace_pow(1,key.p)
 
@@ -152,28 +160,29 @@ def proveR(i, ciphers, randomness, key):
     for i in range(5):
         z.append(mul_add_mod(randomness[i],e,rand[i],key))
 
-    proof_dic = {'e':e.to_bytes().hex(),
-            'z1': z[1].to_bytes().hex(),
-            'z2': z[2].to_bytes().hex(),
-            'z3': z[3].to_bytes().hex(),
-            'z4': z[4].to_bytes().hex(),
-            'z5': z[5].to_bytes().hex()
+    proof = {
+            'e':utils.gmp_to_b64str(e),
+            'z1': utils.gmp_to_b64str(z[1]),
+            'z2': utils.gmp_to_b64str(z[2]),
+            'z3': utils.gmp_to_b64str(z[3]),
+            'z4': utils.gmp_to_b64str(z[4]),
+            'z5': utils.gmp_to_b64str(z[5]),
             }
 
-    return(proof_dic)
+    return(proof)
     
     
-def verifyR(i,ciphers,proof, key):
+def verifyR(i, ciphers, proof, key):
     #(e,z1,z2,z3,z4,z5) = proof
 
     H4 = K12.new(custom = b'R')
 
-    e = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['e']))
-    z1 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z1']))
-    z2 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z2']))
-    z3 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z3']))
-    z4 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z4']))
-    z5 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z5']))
+    e = utils.b64str_to_gmp(proof['e'])
+    z1 = utils.b64str_to_gmp(proof['z1'])
+    z2 = utils.b64str_to_gmp(proof['z2'])
+    z3 = utils.b64str_to_gmp(proof['z3'])
+    z4 = utils.b64str_to_gmp(proof['z4'])
+    z5 = utils.b64str_to_gmp(proof['z5'])
 
     #Bi tilde as B1
     B1 = Cipher(key=key)
@@ -227,7 +236,7 @@ def verifyR(i,ciphers,proof, key):
 
     H4.update(hash_input)
     hash_bytes = H4.read(256)
-    hsh = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    hsh = IntGMP.from_bytes(hash_bytes)
     hsh.inplace_pow(1,key.p)
     
     if e == hsh:
@@ -261,7 +270,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
 
     H5.update(hash_input)
     hash_bytes = H5.read(256)
-    e = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    e = IntGMP.from_bytes(hash_bytes)
 
     e.inplace_pow(1,key.p)
 
@@ -270,20 +279,21 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
     for j in range(2):
         z.append(mul_add_mod(randomness[j],e,rand[j],key))
 
-    proof_dic = {'e':e.to_bytes().hex(),
-            'z1': z[1].to_bytes().hex(),
-            'z2': z[2].to_bytes().hex(),
+    proof = {
+            'e':utils.gmp_to_b64str(e),
+            'z1': utils.gmp_to_b64str(z[1]),
+            'z2': utils.gmp_to_b64str(z[2]),
             }
 
-    return(e, proof_dic)
+    return(e, proof)
 
 def verifyS(i, tau_prime, Ci, Ri, proof, key):
 
     H5 = K12.new(custom = b'S')
 
-    e = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['e']))
-    z1 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z1']))
-    z2 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z2']))
+    e = utils.b64str_to_gmp(proof['e'])
+    z1 = utils.b64str_to_gmp(proof['z1'])
+    z2 = utils.b64str_to_gmp(proof['z2'])
 
     R = Cipher(key=key)
     R.encrypt(z2,z1)
@@ -310,7 +320,7 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
 
     H5.update(hash_input)
     hash_bytes = H5.read(256)
-    hsh = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    hsh = IntGMP.from_bytes(hash_bytes)
 
     hsh.inplace_pow(1,key.p)
 
@@ -349,7 +359,7 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
 
     H6.update(hash_input)
     hash_bytes = H6.read(256)
-    e = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    e = IntGMP.from_bytes(hash_bytes)
 
     e.inplace_pow(1,key.p)
 
@@ -358,21 +368,22 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
     for k in range(2):
         z.append(mul_add_mod(randomness[k],e,rand[k],key))
 
-    proof_dic = {'e':e.to_bytes().hex(),
-            'z1': z[1].to_bytes().hex(),
-            'z2': z[2].to_bytes().hex(),
+    proof = {
+            'e':utils.gmp_to_b64str(e),
+            'z1': utils.gmp_to_b64str(z[1]),
+            'z2': utils.gmp_to_b64str(z[2]),
             }
 
-    return proof_dic
+    return proof
 
 
 def verifyT(i, tau_prime, g_bar, C_bari, Ci, Ri, proof, key):
 
     H6 = K12.new(custom = b'T')
 
-    e = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['e']))
-    z1 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z1']))
-    z2 = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(proof['z2']))
+    e = utils.b64str_to_gmp(proof['e'])
+    z1 = utils.b64str_to_gmp(proof['z1'])
+    z2 = utils.b64str_to_gmp(proof['z2'])
 
     R = Cipher(key=key)
     R.encrypt(z2,z1)
@@ -409,7 +420,7 @@ def verifyT(i, tau_prime, g_bar, C_bari, Ci, Ri, proof, key):
 
     H6.update(hash_input)
     hash_bytes = H6.read(256)
-    hsh = _IntegerGMP.IntegerGMP.from_bytes(hash_bytes)
+    hsh = IntGMP.from_bytes(hash_bytes)
 
     hsh.inplace_pow(1,key.p)
 
