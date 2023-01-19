@@ -78,6 +78,7 @@ class DistributedKey(Key):
     def export(self, Public=True):
         json_keys = super(DistributedKey, self).export_keys(Public)
         if not Public:
+            print(self.x_share)
             json_keys['x-share'] = utils.gmp_to_b64str(self.x_share)
         return export
 
