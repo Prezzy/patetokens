@@ -1,12 +1,13 @@
 import tlib
 import json
-from Crypto.Math import _IntegerGMP
+from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.PublicKey import ElGamal
 from jwcrypto import jwk, jwt
 from base64 import urlsafe_b64decode
+from patetokens import Cipher, utils
 
 def enc_pwd(pwd, key):
-    a_key = rand_feild_element(key)
+    a_key = utils.rand_felement_gmp(key)
     y_part = key.y.__pow__(a_key, key.p)
     pwd_inv = pwd.inverse(key.q)
     g_part = key.g.__pow__(pwd_inv, key.p)
@@ -30,8 +31,8 @@ def enc_pwd(pwd, key):
 
     return Ec
 
-def compute_B(Ec,pwd, key):
-    b_key = rand_feild_element(key)
+def compute_B(Ec, pwd, key):
+    b_key = utils.rand_felement_gmp(key)
     B = Cipher(key=key)
     B.encrypt(b_key,0)
 
@@ -75,8 +76,9 @@ def generate_serialized_token(key, username, encpwd):
 
 def make_token(key, username, pwd):
     pwd = pwd.encode('utf-8')
+    pwd = IntGMP.from_bytes(pwd)
     encpwd = enc_pwd(pwd, key)
-    token = generate_serialized_token(key, username, encpwd)
+    token = generate_serialized_token(key, username, encpwd.export_b64str())
     return token
 
 
@@ -89,12 +91,15 @@ def prep_token(token, key, pwd):
 
     payload = json.loads(payload)
     encpwd_str = payload['encpwd']
-    (a_str, b_str) = encpwd_str.split(',')
+    #(a_str, b_str) = encpwd_str.split(',')
 
-    a = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(a_str))
-    b = _IntegerGMP.IntegerGMP.from_bytes(bytes.fromhex(b_str))
+    #a = IntGMP(bytes.fromhex(a_str))
+    #b = IntGMP(bytes.fromhex(b_str))
+    
+    encpwd = Cipher(key=key)
+    encpwd.from_b64str(encpwd_str)
 
-    encpwd = tlib.Cipher(a,b,key)
+    #encpwd = tlib.Cipher(a,b,key)
 
     (B,beta) = User.compute_B(encpwd, pwd, key)
     (V,gamma) = User.compute_V(pwd, key)
