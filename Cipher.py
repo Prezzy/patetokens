@@ -1,5 +1,5 @@
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
-
+from patetokens import utils
 
 class Cipher:
     def __init__(self, a=None, b=None, key=None):
