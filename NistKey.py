@@ -118,6 +118,7 @@ class FullKey(Key):
             (idx, share) = share.split("-")
             print(idx)
             print(share)
+            print(IntGMP.from_bytes(bytes.fromhex(share)))
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
         
         self.x_shares = shares_dict
