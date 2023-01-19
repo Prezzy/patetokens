@@ -14,7 +14,7 @@ def enc_pwd(pwd, key):
     a = y_part.__mul__(g_part)
     a.inplace_pow(1, key.p)
     b = key.g.__pow__(a_key, key.p)
-    Ec = Cipher(a,b,key)
+    Ec = Cipher.Cipher(a,b,key)
 
     y_part_temp = y_part.__pow__(pwd, key.p)
     a_1 = y_part_temp.__mul__(key.g)
@@ -33,7 +33,7 @@ def enc_pwd(pwd, key):
 
 def compute_B(Ec, pwd, key):
     b_key = utils.rand_felement_gmp(key)
-    B = Cipher(key=key)
+    B = Cipher.Cipher(key=key)
     B.encrypt(b_key,0)
 
     #y_b = key.y.__pow__(b_key, key.p)
@@ -96,7 +96,7 @@ def prep_token(token, key, pwd):
     #a = IntGMP(bytes.fromhex(a_str))
     #b = IntGMP(bytes.fromhex(b_str))
     
-    encpwd = Cipher(key=key)
+    encpwd = Cipher.Cipher(key=key)
     encpwd.from_b64str(encpwd_str)
 
     #encpwd = tlib.Cipher(a,b,key)
