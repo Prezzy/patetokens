@@ -78,7 +78,7 @@ class DistributedKey(Key):
     def export(self, Public=True):
         json_keys = super(DistributedKey, self).export_keys(Public)
         if not Public:
-            print(self.x_share)
+            print("This is the self.x_share {}".format(self.x_share))
             json_keys['x-share'] = utils.gmp_to_b64str(self.x_share)
         return export
 
@@ -117,12 +117,8 @@ class FullKey(Key):
         secrets = shamir.to_hex(shamir.split_secret(x_bytes, THRESHOLD, TOTAL, prime_mod=self.q))
 
         shares_dict = {}
-        print(secrets)
         for share in secrets['shares']:
             (idx, share) = share.split("-")
-            print(idx)
-            print(share)
-            print("this is the intGMP value {}".format(IntGMP.from_bytes(bytes.fromhex(share))))
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
         
         self.x_shares = shares_dict
