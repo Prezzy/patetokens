@@ -154,7 +154,7 @@ class FullKey(Key):
 
     def export_keys(self, Public=True):
         json_keys = super(FullKey, self).export_keys(Public)
-        json_keys = ['group-idxs']
+        json_keys['group-idxs'] = self.group_idxs
         if not Public:
             json_keys['x-shares'] = dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.x_shares.items()))
         return json_keys
