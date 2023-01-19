@@ -62,7 +62,7 @@ class Key:
 
 class DistributedKey(Key):
     def __init__(self, x_share, group_pks):
-        super.__init__()
+        super().__init__()
         self.x_share = x_share
         
     def from_json(self, json_keys):
