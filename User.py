@@ -1,4 +1,3 @@
-import tlib
 import json
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.PublicKey import ElGamal
@@ -98,7 +97,7 @@ def prep_token(token, key, pwd):
     #b = IntGMP(bytes.fromhex(b_str))
     
     encpwd = Cipher.Cipher(key=key)
-    encpwd.from_b64str(encpwd_str)
+    encpwd.from_b64str(key, encpwd_str)
 
     #encpwd = tlib.Cipher(a,b,key)
 
