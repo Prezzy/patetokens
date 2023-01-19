@@ -60,14 +60,14 @@ class Key:
 
 
 class DistributedKey(Key):
-    def __init__(self, y, idx, x_share, group_pks):
+    def __init__(self, y=None, idx=None, x_share=None, group_pks=None):
         super().__init__()
         self.y = y
         self.idx = idx
         self.x_share = x_share
         self.group_pks = group_pks
         
-    def from_json(json_keys):
+    def from_json(self,json_keys):
         #super(DistributedKey, self).from_json(json_keys)
         self.p = utils.b64str_to_gmp(json_keys['p'])
         self.q = utils.b64str_to_gmp(json_keys['q'])
