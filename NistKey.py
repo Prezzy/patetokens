@@ -29,6 +29,7 @@ class Key:
         self.g = IntGMP(2)
         self.x = None
         self.y = None
+        self.group_idx = None
         self.group_pks = None
             
     def from_json(self, json_keys):
@@ -62,9 +63,11 @@ class Key:
 
 
 class DistributedKey(Key):
-    def __init__(self, x_share, group_pks):
+    def __init__(self, idx, x_share, group_pks):
         super().__init__()
+        self.idx = idx
         self.x_share = x_share
+        self.group_pks = group_pks
         
     def from_json(self, json_keys):
         super(DistributedKey, self).from_json(json_keys)
@@ -146,13 +149,13 @@ class FullKey(Key):
         if idx not in self.group_idxs:
             print("invalid idx")
             return "Error"
-        veri_key = DistributedKey(self.x_shares[idx], self.group_pks)
+        veri_key = DistributedKey(idx, self.x_shares[idx], self.group_pks)
         return veri_key.export(False)
 
 
 
     def from_json(self, json_keys):
-        super(DistributedKey, self).from_json(json_keys)
+        super(FullKey, self).from_json(json_keys)
         self.group_idxs = json_keys['group-idxs']
         #uppack group-pks from bytes to IntGMP
         self.x_shares = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['x-shares'].items()))
