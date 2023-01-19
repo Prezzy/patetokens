@@ -60,8 +60,9 @@ class Key:
 
 
 class DistributedKey(Key):
-    def __init__(self, idx, x_share, group_pks):
+    def __init__(self, y, idx, x_share, group_pks):
         super().__init__()
+        self.y = y
         self.idx = idx
         self.x_share = x_share
         self.group_pks = group_pks
@@ -143,7 +144,7 @@ class FullKey(Key):
         if idx not in self.group_idxs:
             print("invalid idx")
             return "Error"
-        veri_key = DistributedKey(idx, self.x_shares[idx], self.group_pks)
+        veri_key = DistributedKey(self.y, idx, self.x_shares[idx], self.group_pks)
         return veri_key.export(False)
 
 
