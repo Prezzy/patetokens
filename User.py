@@ -3,6 +3,7 @@ import json
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.PublicKey import ElGamal
 from jwcrypto import jwk, jwt, jws
+from jwcrypto.common import json_encode
 from base64 import urlsafe_b64decode
 from patetokens import Cipher, utils
 
