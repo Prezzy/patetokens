@@ -74,11 +74,11 @@ def generate_serialized_token(key, username, encpwd):
     token = Token.serialize()
     return token
 
-def make_token(key, username, pwd):
+def make_token(key, token_key, username, pwd):
     pwd = pwd.encode('utf-8')
     pwd = IntGMP.from_bytes(pwd)
     encpwd = enc_pwd(pwd, key)
-    token = generate_serialized_token(key, username, encpwd.export_b64str())
+    token = generate_serialized_token(token_key, username, encpwd.export_b64str())
     return token
 
 
