@@ -50,11 +50,6 @@ class Key:
                 'y': utils.gmp_to_b64str(self.y),
                 'group-pks' : dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.group_pks.items())),
                 }
-        if not Public:
-            try:
-                json_keys['x'] = utils.gmp_to_b64str(self.x)
-            except:
-                print("trying to extract private key but there was an error")
 
         return json_keys
 
