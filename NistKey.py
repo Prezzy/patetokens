@@ -113,6 +113,7 @@ class FullKey(Key):
         secrets = shamir.to_hex(shamir.split_secret(x_bytes, THRESHOLD, TOTAL, prime_mod=self.q))
 
         shares_dict = {}
+        print(secrets)
         for share in secrets['shares']:
             (idx, share) = share.split("-")
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
