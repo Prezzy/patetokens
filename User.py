@@ -2,7 +2,7 @@ import tlib
 import json
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.PublicKey import ElGamal
-from jwcrypto import jwk, jwt
+from jwcrypto import jwk, jwt, jws
 from base64 import urlsafe_b64decode
 from patetokens import Cipher, utils
 
