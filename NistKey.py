@@ -68,14 +68,15 @@ class DistributedKey(Key):
         self.group_pks = group_pks
         
     def from_json(self, json_keys):
-        self.p = utils.b64str_to_gmp(json_keys['p'])
-        self.q = utils.b64str_to_gmp(json_keys['q'])
-        self.g = utils.b64str_to_gmp(json_keys['g'])
-        self.y = utils.b64str_to_gmp(json_keys['y'])
-        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'],items()))
+        super(DistributedKey, self).from_json(json_keys)
+        #self.p = utils.b64str_to_gmp(json_keys['p'])
+        #self.q = utils.b64str_to_gmp(json_keys['q'])
+        #self.g = utils.b64str_to_gmp(json_keys['g'])
+        #self.y = utils.b64str_to_gmp(json_keys['y'])
+        #self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'],items()))
         self.x_share = json_keys['x-shares']
-        if 'x' in json_keys.keys():
-            self.x = utils.b64str_to_gmp(json_keys['x'])
+        #if 'x' in json_keys.keys():
+        #    self.x = utils.b64str_to_gmp(json_keys['x'])
 
     def export(self, Public=True):
         json_keys = super(DistributedKey, self).export_keys(Public)
@@ -123,8 +124,6 @@ class FullKey(Key):
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
         
         self.x_shares = shares_dict
-        print("self.x_shares is set with {}".format(shares_dict))
-        print("self.x is {}".format(self.x_shares))
         #FOR TEST
         #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
         #print("key.x is {}".format(key.x.to_bytes()))
