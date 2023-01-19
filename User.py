@@ -97,7 +97,7 @@ def prep_token(token, key, pwd):
     #b = IntGMP(bytes.fromhex(b_str))
     
     encpwd = Cipher.Cipher(key=key)
-    encpwd.from_b64str(key, encpwd_str)
+    encpwd.from_b64str(encpwd_str, key)
 
     #encpwd = tlib.Cipher(a,b,key)
 
