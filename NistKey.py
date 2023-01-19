@@ -72,7 +72,7 @@ class DistributedKey(Key):
         self.group_pks = dict(map(lambda keyi: (keyi[0], IntGMP.from_bytes(keyi[1])), json_keys['group-pks'],items()))
 
     def export(self, Public=True):
-        json_keys = super(DistributedKey, self).export(Public)
+        json_keys = super(DistributedKey, self).export_keys(Public)
         if not Public:
             json_keys['x-share'] = utils.gmp_to_b64str(self.x_share)
         return export
