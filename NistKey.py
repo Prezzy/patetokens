@@ -123,6 +123,7 @@ class FullKey(Key):
         
         self.x_shares = shares_dict
         print("self.x_shares is set with {}".format(shares_dict))
+        print("self.x is {}".format(self.x_shares))
         #FOR TEST
         #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
         #print("key.x is {}".format(key.x.to_bytes()))
