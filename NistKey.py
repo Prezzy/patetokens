@@ -1,6 +1,7 @@
 import os
 from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
+from patetokens import utils
 
 TOTAL = 2
 THRESHOLD = 2
