@@ -118,11 +118,11 @@ class FullKey(Key):
             (idx, share) = share.split("-")
             print(idx)
             print(share)
-            print(IntGMP.from_bytes(bytes.fromhex(share)))
+            print("this is the intGMP value {}".format(IntGMP.from_bytes(bytes.fromhex(share))))
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
         
         self.x_shares = shares_dict
-        print("self.x_shares is set with {}").format(shares_dict)
+        print("self.x_shares is set with {}".format(shares_dict))
         #FOR TEST
         #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
         #print("key.x is {}".format(key.x.to_bytes()))
