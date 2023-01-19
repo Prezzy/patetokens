@@ -33,7 +33,7 @@ def rand_felement_gmp(key):
     return rand.inplace_pow(1,key.q)
     #return rand
 
-def rand_felement_b64str(key)
+def rand_felement_b64str(key):
     return gmp_to_b64str(rand_felement_gmp(key))
 
 def mul_mod(x,y,key):
