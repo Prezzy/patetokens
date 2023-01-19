@@ -152,7 +152,7 @@ class FullKey(Key):
         #uppack group-pks from bytes to IntGMP
         self.x_shares = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['x-shares'].items()))
 
-    def export(self, Public=True):
+    def export_keys(self, Public=True):
         json_keys = super(FullKey, self).export(Public)
         json_keys = ['group-idxs']
         if not Public:
