@@ -43,9 +43,6 @@ class Key:
             self.x = utils.b64str_to_gmp(json_keys['x'])
     	
     def export_keys(self, Public=True):
-        if self.y is None:
-            print("key is not set yet")
-            return None
         json_keys = {
                 'p': utils.gmp_to_b64str(self.p),
                 'q': utils.gmp_to_b64str(self.q),
@@ -108,9 +105,9 @@ class FullKey(Key):
         self.x.__iadd__(1)
         self.y = self.g.__pow__(self.x, self.p)
 
-        x_hex = self.x.to_bytes().hex()
-        y_hex = self.y.to_bytes().hex()
-        serialized_priv_key = {'x': x_hex, 'y': y_hex}
+        #x_hex = self.x.to_bytes().hex()
+        #y_hex = self.y.to_bytes().hex()
+        #serialized_priv_key = {'x': x_hex, 'y': y_hex}
 
     def split_sk(self):
         x_bytes = self.x.to_bytes()
