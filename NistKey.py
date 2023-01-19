@@ -78,7 +78,7 @@ class DistributedKey(Key):
         if not Public:
             print("This is the self.x_share {}".format(self.x_share))
             json_keys['x-share'] = utils.gmp_to_b64str(self.x_share)
-        return export
+        return json_keys
 
 
         
