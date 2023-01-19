@@ -67,7 +67,7 @@ class DistributedKey(Key):
         self.x_share = x_share
         self.group_pks = group_pks
         
-    def from_json(self, json_keys):
+    def from_json(json_keys):
         #super(DistributedKey, self).from_json(json_keys)
         self.p = utils.b64str_to_gmp(json_keys['p'])
         self.q = utils.b64str_to_gmp(json_keys['q'])
