@@ -38,7 +38,7 @@ class Key:
         self.g = utils.b64str_to_gmp(json_keys['g'])
         self.y = utils.b64str_to_gmp(json_keys['y'])
         #uppack group-pks from bytes to IntGMP
-        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'],items()))
+        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'].items()))
         if 'x' in json_keys.keys():
             self.x = utils.b64str_to_gmp(json_keys['x'])
     	
@@ -73,7 +73,7 @@ class DistributedKey(Key):
         self.q = utils.b64str_to_gmp(json_keys['q'])
         self.g = utils.b64str_to_gmp(json_keys['g'])
         self.y = utils.b64str_to_gmp(json_keys['y'])
-        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'],items()))
+        self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'].items()))
         self.x_share = json_keys['x-shares']
         if 'x' in json_keys.keys():
             self.x = utils.b64str_to_gmp(json_keys['x'])
