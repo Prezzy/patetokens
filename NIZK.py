@@ -297,7 +297,7 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
     z1 = utils.b64str_to_gmp(proof['z1'])
     z2 = utils.b64str_to_gmp(proof['z2'])
 
-    R = Cipher(key=key)
+    R = Cipher.Cipher(key=key)
     R.encrypt(z2,z1)
 
     R_temp = Ri.inverse()
@@ -312,10 +312,10 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
     W.inplace_pow(1, key.p)
 
     hash_input = str(i) + tau_prime
-    hash_input += Ci.to_bytes().hex()
-    hash_input += Ri.get_string()
-    hash_input += W.to_bytes().hex()
-    hash_input += R.get_string()
+    hash_input += gmp_to_b64str(Ci)
+    hash_input += Ri.export_b64str()
+    hash_input += gmp_to_b64str(W)
+    hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
 
