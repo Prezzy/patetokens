@@ -49,6 +49,10 @@ def round2(i, nonces, B, V, step1_responses, key):
 
     coeffs = shamir.lagrange_coefficients(IntGMP(0), indexs_gmp, key.q)
 
+    print("+++++")
+    print(coeffs[int(i)])
+    print("+++++")
+    print(key.x_share)
     a_i = coeffs[int(i)].__mul__(key.x_share)
     a_i.inplace_pow(1, key.q)
     C_bar = yg.b.__pow__(a_i,key.p)
