@@ -102,7 +102,8 @@ class Cipher:
     @staticmethod
     def from_b64str(cipher_string, key):
         (a_str, b_str) = cipher_string.split(',')
+        
+        a = utils.b64str_to_gmp(a_str)
+        b = utils.b64str_to_gmp(b_str)
 
-        self.a = utils.b64str_to_gmp(a_str)
-        self.b = utils.b64str_to_gmp(b_str)
-        self.key = key
+        return Cipher(a,b,key)
