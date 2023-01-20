@@ -234,6 +234,7 @@ def verifyR(i, ciphers, proof, key):
     hash_input += V3.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
+    print(hash_input)
 
 
     H4.update(hash_input)
