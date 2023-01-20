@@ -254,7 +254,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
 
     rand = []
     for j in range(2):
-        rand.append(rand_feild_element(key))
+        rand.append(utils.rand_felement_gmp(key))
 
     W = key.g.__pow__(rand[0], key.p)
 
