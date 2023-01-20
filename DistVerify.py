@@ -7,7 +7,7 @@ def round1(B,V,key):
     #rand = [ri, ri', gammai, gammai', gammai'']
     rand = []
     for i in range(5):
-        rand.append(rand_felement_gmp(key))
+        rand.append(utils.rand_felement_gmp(key))
 
     #Bi as B1
     B1 = B.exp(rand[0])  #B^{ri}
