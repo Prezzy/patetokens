@@ -57,7 +57,7 @@ def round2(i, nonces, B, V, step1_responses, key):
     R_i.encrypt(zeta, a_i)
     C = dict()
     for idx in coeffs:
-        pk_idx = key.group_pks[idx]
+        pk_idx = key.group_pks[str(idx)]
         C[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
 
     return (tau_prime, C[i], R_i, [a_i, zeta])
