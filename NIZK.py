@@ -187,7 +187,7 @@ def verifyR(i, ciphers, proof, key):
     z5 = utils.b64str_to_gmp(proof['z5'])
 
     #Bi tilde as B1
-    B1 = Cipher(key=key)
+    B1 = Cipher.Cipher(key=key)
     B1.encrypt(z2,0)
     B_temp1 = ciphers[0].exp(z1)
 
@@ -198,7 +198,7 @@ def verifyR(i, ciphers, proof, key):
     B1.imul(B_temp2)
 
     #Vi tilde as V1
-    V1 = Cipher(key=key)
+    V1 = Cipher.Cipher(key=key)
     V1.encrypt(z3,z1)
 
     V1_temp = ciphers[3].inverse()
@@ -207,7 +207,7 @@ def verifyR(i, ciphers, proof, key):
 
 
     #Vi' tilde as V2
-    V2 = Cipher(key=key)
+    V2 = Cipher.Cipher(key=key)
     V2.encrypt(z4,z1,None,ciphers[1].a)
 
     V2_temp = ciphers[4].inverse()
@@ -217,7 +217,7 @@ def verifyR(i, ciphers, proof, key):
 
 
     #Vi'' tilde as V3
-    V3 = Cipher(key=key)
+    V3 = Cipher.Cipher(key=key)
     V3.encrypt(z5,z1,None,ciphers[1].b)
 
     V3_temp = ciphers[5].inverse()
