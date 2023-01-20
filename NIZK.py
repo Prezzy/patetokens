@@ -338,23 +338,23 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
 
     rand = []
     for j in range(2):
-        rand.append(rand_feild_element(key))
+        rand.append(utils.rand_felement_gmp(key))
 
     W_bar = g_bar.__pow__(rand[0], key.p)
 
     W = key.g.__pow__(rand[0], key.p)
 
-    R = Cipher(key=key)
+    R = Cipher.Cipher(key=key)
     R.encrypt(rand[1], rand[0])
 
     hash_input = str(i) + tau_prime
-    hash_input += g_bar.to_bytes().hex()
-    hash_input += C_bari.to_bytes().hex()
-    hash_input += Ci.to_bytes().hex()
-    hash_input += Ri.get_string()
-    hash_input += W_bar.to_bytes().hex()
-    hash_input += W.to_bytes().hex()
-    hash_input += R.get_string()
+    hash_input += gmp_to_b64str(g_bar)
+    hash_input += gmp_to_b64str(C_bari)
+    hash_input += gmp_to_b64str(Ci)
+    hash_input += Ri.export_b64str()
+    hash_input += gmp_to_b64str(W_bar)
+    hash_input += gmp_to_b64str(W)
+    hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
 
@@ -368,7 +368,7 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
     z = [e]
     # z values
     for k in range(2):
-        z.append(mul_add_mod(randomness[k],e,rand[k],key))
+        z.append(utils.mul_add_mod(randomness[k],e,rand[k],key))
 
     proof = {
             'e':utils.gmp_to_b64str(e),
