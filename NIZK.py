@@ -263,7 +263,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
 
     hash_input = str(i) + tau_prime
     hash_input += utils.gmp_to_b64str(Ci)
-    hash_input += utils.gmp_to_b64str(Ri)
+    hash_input += Ri.export_b64str()
     hash_input += utils.gmp_to_b64str(W)
     hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
