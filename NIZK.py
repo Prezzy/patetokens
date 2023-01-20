@@ -124,30 +124,30 @@ def proveR(i, ciphers, randomness, key):
         rand.append(utils.rand_felement_gmp(key))
 
     #Bi tilde as B1
-    B1 = Cipher(key=key)
+    B1 = Cipher.Cipher(key=key)
     B1.encrypt(rand[1],0)
     B_temp = ciphers[0].exp(rand[0])
     B1.imul(B_temp)
 
     #Vi tilde as V1
-    V1 = Cipher(key=key)
+    V1 = Cipher.Cipher(key=key)
     V1.encrypt(rand[2],rand[0])
 
     #Vi' tilde as V2
-    V2 = Cipher(key=key)
+    V2 = Cipher.Cipher(key=key)
     V2.encrypt(rand[3],rand[0],None,ciphers[1].a)
 
     #Vi'' tilde as V3
-    V3 = Cipher(key=key)
+    V3 = Cipher.Cipher(key=key)
     V3.encrypt(rand[4],rand[0],None,ciphers[1].b)
 
     hash_input = i
     for cipher in ciphers:
-        hash_input += cipher.get_string()
-    hash_input += B1.get_string()
-    hash_input += V1.get_string()
-    hash_input += V2.get_string()
-    hash_input += V3.get_string()
+        hash_input += cipher.export_b64str()
+    hash_input += B1.export_b64str()
+    hash_input += V1.export_b64str()
+    hash_input += V2.export_b64str()
+    hash_input += V3.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
 
@@ -160,7 +160,7 @@ def proveR(i, ciphers, randomness, key):
     z = [e]
     # z values
     for i in range(5):
-        z.append(mul_add_mod(randomness[i],e,rand[i],key))
+        z.append(utils.mul_add_mod(randomness[i],e,rand[i],key))
 
     proof = {
             'e':utils.gmp_to_b64str(e),
