@@ -279,7 +279,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
     z = [e]
     # z values
     for j in range(2):
-        z.append(mul_add_mod(randomness[j],e,rand[j],key))
+        z.append(utils.mul_add_mod(randomness[j],e,rand[j],key))
 
     proof = {
             'e':utils.gmp_to_b64str(e),
