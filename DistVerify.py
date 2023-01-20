@@ -1,11 +1,13 @@
 from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
+from patetokens import utils
+
 
 def round1(B,V,key):
     #rand = [ri, ri', gammai, gammai', gammai'']
     rand = []
     for i in range(5):
-        rand.append(rand_feild_element(key))
+        rand.append(rand_felement_gmp(key))
 
     #Bi as B1
     B1 = B.exp(rand[0])  #B^{ri}
@@ -30,7 +32,7 @@ def round1(B,V,key):
     
 def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
     yg = Cipher(IntGMP(1), IntGMP(1), key=key)
-    B_string = B.get_string() + V.get_string()
+    B_string = B.export_b64str() + V.export_b64str()
     V_string = ''
     for idx in step1_responses:
         yg.imul(step1_responses[idx]['ciphers'][0])
@@ -41,7 +43,7 @@ def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
     indexs_int = list(map(int,indexs))
     indexs_gmp = list(map(IntGMP, indexs_int))
 
-    nonces = dic_to_string(nonces)
+    nonces = utils.dic_to_string(nonces)
 
     tau_prime = nonces + B_string + V_string
 
