@@ -101,7 +101,7 @@ def prep_token(token, key, pwd):
 
     #encpwd = tlib.Cipher(a,b,key)
 
-    #(B,beta) = compute_B(encpwd, pwd, key)
+    (B,beta) = compute_B(encpwd, pwd, key)
     #(V,gamma) = compute_V(pwd, key)
 
     #public = (encpwd, B, V)
