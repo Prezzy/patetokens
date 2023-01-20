@@ -27,9 +27,9 @@ def proveQ(nonces, public, private, key):
 
     hash_input = ""
     hash_input += utils.dic_to_string(nonces)
-    hash_input += public[0].get_string()
-    hash_input += public[1].get_string()
-    hash_input += public[2].get_string()
+    hash_input += public[0].export_b64str()
+    hash_input += public[1].export_b64str()
+    hash_input += public[2].export_b64str()
     hash_input += B1.export_b64str()
     hash_input += V1.export_b64str()
 
