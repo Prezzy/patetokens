@@ -26,7 +26,7 @@ def proveQ(nonces, public, private, key):
     V1.encrypt(rand[2],rand[1])
 
     hash_input = ""
-    hash_input += dic_to_string(nonces)
+    hash_input += utils.dic_to_string(nonces)
     hash_input += public[0].get_string()
     hash_input += public[1].get_string()
     hash_input += public[2].get_string()
