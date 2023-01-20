@@ -258,14 +258,14 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
 
     W = key.g.__pow__(rand[0], key.p)
 
-    R = Cipher(key=key)
+    R = Cipher.Cipher(key=key)
     R.encrypt(rand[1], rand[0])
 
     hash_input = str(i) + tau_prime
-    hash_input += Ci.to_bytes().hex()
-    hash_input += Ri.get_string()
-    hash_input += W.to_bytes().hex()
-    hash_input += R.get_string()
+    hash_input += Ci.export_b64str()
+    hash_input += Ri.export_b64str()
+    hash_input += W.export_b64str()
+    hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
 
