@@ -71,29 +71,29 @@ def verifyQ(nonces, public, proof, key):
     z3 = utils.b64str_to_gmp(proof['z3'])
 
     #B' as B1
-    B1 = Cipher(key=key)
+    B1 = Cipher.Cipher(key=key)
     B1.encrypt(z1,0)
     B_temp1 = public[0].exp(z2) 
-    B_temp2 = public[1].mul(Cipher(key.g,1,key))
+    B_temp2 = public[1].mul(Cipher.Cipher(key.g,1,key))
     B_temp2.iinverse()
     B_temp2.iexp(e)
     B1.imul(B_temp1)
     B1.imul(B_temp2)
 
     #V' as V1
-    V1 = Cipher(key=key)
+    V1 = Cipher.Cipher(key=key)
     V1.encrypt(z3,z2)
     V_temp = public[2].inverse()
     V_temp.iexp(e)
     V1.imul(V_temp)
 
     hash_input = ""
-    hash_input += dic_to_string(nonces)
-    hash_input += public[0].get_string()
-    hash_input += public[1].get_string()
-    hash_input += public[2].get_string()
-    hash_input += B1.get_string()
-    hash_input += V1.get_string() 
+    hash_input += utils.dic_to_string(nonces)
+    hash_input += public[0].export_b64str()
+    hash_input += public[1].export_b64str()
+    hash_input += public[2].export_b64str()
+    hash_input += B1.export_b64str()
+    hash_input += V1.export_b64str() 
 
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
