@@ -227,11 +227,11 @@ def verifyR(i, ciphers, proof, key):
  
     hash_input = i
     for cipher in ciphers:
-        hash_input += cipher.get_string()
-    hash_input += B1.get_string()
-    hash_input += V1.get_string()
-    hash_input += V2.get_string()
-    hash_input += V3.get_string()
+        hash_input += cipher.export_b64str()
+    hash_input += B1.export_b64str()
+    hash_input += V1.export_b64str()
+    hash_input += V2.export_b64str()
+    hash_input += V3.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
 
