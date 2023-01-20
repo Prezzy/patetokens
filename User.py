@@ -65,6 +65,12 @@ def compute_B(Ec, pwd, key):
 
     return (B,b_key)
 
+def compute_V(pwd, key):
+    V = Cipher.Cipher(key=key)
+    g_key = rand_felement_gmp(key) 
+    V.encrypt(g_key,pwd)
+
+    return (V,g_key)
 
 def generate_serialized_token(key, username, encpwd):
     payload = {'username' : username, 'encpwd' : encpwd}
@@ -104,7 +110,7 @@ def prep_token(token, key, pwd):
     #encpwd = tlib.Cipher(a,b,key)
 
     (B,beta) = compute_B(encpwd, pwd, key)
-    #(V,gamma) = compute_V(pwd, key)
+    (V,gamma) = compute_V(pwd, key)
 
     #public = (encpwd, B, V)
     #private = (beta, pwd, gamma)
