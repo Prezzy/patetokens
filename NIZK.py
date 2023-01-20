@@ -46,7 +46,7 @@ def proveQ(nonces, public, private, key):
 
     z = [e]
     for i in range(len(private)):
-        z.append(mul_add_mod(private[i],e,rand[i],key))
+        z.append(utils.mul_add_mod(private[i],e,rand[i],key))
 
     
     proof = {
