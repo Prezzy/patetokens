@@ -287,7 +287,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
             'z2': utils.gmp_to_b64str(z[2]),
             }
 
-    return(e, proof)
+    return proof
 
 def verifyS(i, tau_prime, Ci, Ri, proof, key):
 
