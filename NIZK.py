@@ -121,7 +121,7 @@ def proveR(i, ciphers, randomness, key):
     #mu1, mu2, v1, v2, v3
     rand = []    
     for j in range(5):
-        rand.append(rand_feild_element(key))
+        rand.append(utils.rand_felement_gmp(key))
 
     #Bi tilde as B1
     B1 = Cipher(key=key)
