@@ -348,12 +348,12 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
     R.encrypt(rand[1], rand[0])
 
     hash_input = str(i) + tau_prime
-    hash_input += gmp_to_b64str(g_bar)
-    hash_input += gmp_to_b64str(C_bari)
-    hash_input += gmp_to_b64str(Ci)
+    hash_input += utils.gmp_to_b64str(g_bar)
+    hash_input += utils.gmp_to_b64str(C_bari)
+    hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
-    hash_input += gmp_to_b64str(W_bar)
-    hash_input += gmp_to_b64str(W)
+    hash_input += utils.gmp_to_b64str(W_bar)
+    hash_input += utils.gmp_to_b64str(W)
     hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
