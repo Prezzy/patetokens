@@ -67,7 +67,7 @@ def compute_B(Ec, pwd, key):
 
 def compute_V(pwd, key):
     V = Cipher.Cipher(key=key)
-    g_key = rand_felement_gmp(key) 
+    g_key = utils.rand_felement_gmp(key) 
     V.encrypt(g_key,pwd)
 
     return (V,g_key)
