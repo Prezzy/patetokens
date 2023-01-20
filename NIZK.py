@@ -30,8 +30,8 @@ def proveQ(nonces, public, private, key):
     hash_input += public[0].get_string()
     hash_input += public[1].get_string()
     hash_input += public[2].get_string()
-    hash_input += B1.get_string()
-    hash_input += V1.get_string()
+    hash_input += B1.export_b64str()
+    hash_input += V1.export_b64str()
 
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
