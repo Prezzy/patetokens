@@ -31,7 +31,7 @@ def round1(B,V,key):
     return ([B,V,B1,V1,V2,V3],rand)
     
 def round2(i, nonces, B, V, step1_responses, key):
-    yg = Cipher(IntGMP(1), IntGMP(1), key=key)
+    yg = Cipher.Cipher(IntGMP(1), IntGMP(1), key=key)
     B_string = B.export_b64str() + V.export_b64str()
     V_string = ''
     for idx in step1_responses:
@@ -53,7 +53,7 @@ def round2(i, nonces, B, V, step1_responses, key):
     a_i.inplace_pow(1, key.q)
     C_bar = yg.b.__pow__(a_i,key.p)
     zeta = utils.rand_feild_element(key)
-    R_i = Cipher(key=key)
+    R_i = Cipher.Cipher(key=key)
     R_i.encrypt(zeta, a_i)
     C = dict()
     for idx in coeffs:
