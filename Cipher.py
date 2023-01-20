@@ -99,7 +99,8 @@ class Cipher:
         b_str = utils.gmp_to_b64str(self.b)
         return a_str + ',' + b_str
 
-    def from_b64str(self, cipher_string, key):
+    @staticmethod
+    def from_b64str(cipher_string, key):
         (a_str, b_str) = cipher_string.split(',')
 
         self.a = utils.b64str_to_gmp(a_str)
