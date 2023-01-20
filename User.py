@@ -44,7 +44,7 @@ def compute_B(Ec, pwd, key):
     B.imul(B_temp1)
 
     g_inv = key.g.inverse(key.p)
-    B_temp2 = Cipher(g_inv,1,key)
+    B_temp2 = Cipher.Cipher(g_inv,1,key)
     B.imul(B_temp2)
 
     #y_1 = key.y.__pow__(b_key, key.p)
