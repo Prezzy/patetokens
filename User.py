@@ -84,6 +84,8 @@ def make_token(key, token_key, username, pwd):
 
 def prep_token(token, key, pwd):
 
+    pwd = IntGMP.from_bytes(pwd.encode('utf-8'))
+
     dic = json.loads(token)
     padding = '=' * (4 - len(dic['payload']) % 4)
     payload = dic['payload']
