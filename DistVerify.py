@@ -1,6 +1,6 @@
 from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
-from patetokens import utils
+from patetokens import Cipher, utils
 
 
 def round1(B,V,key):
@@ -11,21 +11,21 @@ def round1(B,V,key):
 
     #Bi as B1
     B1 = B.exp(rand[0])  #B^{ri}
-    B1_temp = Cipher(key=key)
+    B1_temp = Cipher.Cipher(key=key)
     B1_temp.encrypt(rand[1],0)
 
     B1.imul(B1_temp)  # B^{ri} * (y,g)^{ri'}
 
     #Vi as V1
-    V1 = Cipher(key=key)
+    V1 = Cipher.Cipher(key=key)
     V1.encrypt(rand[2],rand[0]) #(h^{yi} g^{ri}, g^{yi})
 
     #Vi' as V2
-    V2 = Cipher(key=key)
+    V2 = Cipher.Cipher(key=key)
     V2.encrypt(rand[3],rand[0],None,V.a)
 
     #Vi'' as V3
-    V3 = Cipher(key=key)
+    V3 = Cipher.Cipher(key=key)
     V3.encrypt(rand[4],rand[0],None,V.b)
 
     return ([B,V,B1,V1,V2,V3],rand)
