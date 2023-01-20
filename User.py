@@ -99,20 +99,14 @@ def prep_token(token, key, pwd):
 
     payload = json.loads(payload)
     encpwd_str = payload['encpwd']
-    #(a_str, b_str) = encpwd_str.split(',')
-
-    #a = IntGMP(bytes.fromhex(a_str))
-    #b = IntGMP(bytes.fromhex(b_str))
     
     encpwd = Cipher.Cipher(key=key)
     encpwd.from_b64str(encpwd_str, key)
 
-    #encpwd = tlib.Cipher(a,b,key)
-
     (B,beta) = compute_B(encpwd, pwd, key)
     (V,gamma) = compute_V(pwd, key)
 
-    #public = (encpwd, B, V)
-    #private = (beta, pwd, gamma)
-    return None
-    #return public, private
+    public = (encpwd, B, V)
+    private = (beta, pwd, gamma)
+
+    return public, private
