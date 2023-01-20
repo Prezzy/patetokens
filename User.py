@@ -100,8 +100,7 @@ def prep_token(token, key, pwd):
     payload = json.loads(payload)
     encpwd_str = payload['encpwd']
     
-    encpwd = Cipher.Cipher(key=key)
-    encpwd.from_b64str(encpwd_str, key)
+    encpwd = Cipher.Cipher.from_b64str(encpwd_str, key)
 
     (B,beta) = compute_B(encpwd, pwd, key)
     (V,gamma) = compute_V(pwd, key)
