@@ -1,6 +1,8 @@
 import json
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from Crypto.Hash import KangarooTwelve as K12
+from patetokens import Cipher, utils
+
 
 #public values Ec (enc pwd), B, V
 #private values beta, pwd, gamma
@@ -11,16 +13,16 @@ def proveQ(nonces, public, private, key):
     #mu1, mu2, v
     rand = []
     for i in range(3):
-        rand.append(rand_feild_element(key))
+        rand.append(utils.rand_felement_gmp(key))
 
     #B' as B1 
-    B1 = Cipher(key=key)
+    B1 = Cipher.Cipher(key=key)
     B1.encrypt(rand[0],0)
     B_temp = public[0].exp(rand[1])
     B1.imul(B_temp)
 
     #V' as V1
-    V1 = Cipher(key=key)
+    V1 = Cipher.Cipher(key=key)
     V1.encrypt(rand[2],rand[1])
 
     hash_input = ""
@@ -54,7 +56,7 @@ def proveQ(nonces, public, private, key):
             'z3': utils.gmp_to_b64str(z[3]),
             }
 
-    return (z)
+    return proof
     
     
 #public parameters [Ec, B, V]
