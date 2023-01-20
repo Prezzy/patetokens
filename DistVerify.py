@@ -30,14 +30,14 @@ def round1(B,V,key):
 
     return ([B,V,B1,V1,V2,V3],rand)
     
-def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
+def round2(i, nonces, B, V, step1_responses, key):
     yg = Cipher(IntGMP(1), IntGMP(1), key=key)
     B_string = B.export_b64str() + V.export_b64str()
     V_string = ''
     for idx in step1_responses:
         yg.imul(step1_responses[idx]['ciphers'][0])
-        B_string += step1_responses[idx]['ciphers'][0].get_string()
-        V_string += step1_responses[idx]['ciphers'][1].get_string()
+        B_string += step1_responses[idx]['ciphers'][0].export_b64str()
+        V_string += step1_responses[idx]['ciphers'][1].export_b64str()
         
     indexs = list(nonces.keys())
     indexs_int = list(map(int,indexs))
@@ -49,7 +49,7 @@ def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
 
     coeffs = shamir.lagrange_coefficients(IntGMP(0), indexs_gmp, key.q)
 
-    a_i = coeffs[int(i)].__mul__(xi)
+    a_i = coeffs[int(i)].__mul__(key.x_share)
     a_i.inplace_pow(1, key.q)
     C_bar = yg.b.__pow__(a_i,key.p)
     zeta = utils.rand_feild_element(key)
@@ -57,7 +57,7 @@ def round2(i, nonces, B, V, step1_responses, key, xi, public_keys):
     R_i.encrypt(zeta, a_i)
     C = dict()
     for idx in coeffs:
-        pk_idx = IntGMP.from_bytes(bytes.fromhex(public_keys[str(idx)]))
+        pk_idx = key.group_pks[idx]
         C[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
 
     return (tau_prime, C[i], R_i, [a_i, zeta])
