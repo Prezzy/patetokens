@@ -60,7 +60,7 @@ def round2(i, nonces, B, V, step1_responses, key):
         pk_idx = key.group_pks[str(idx)]
         C[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
 
-    return (tau_prime, C[i], R_i, [a_i, zeta])
+    return (tau_prime, C, R_i, a_i, zeta, yg, C_bar)
 
     #e, proof = proveS(i, tau_prime, C[i], R_i, [a_i, zeta], key)
     #result = verifyS(i, tau_prime, C[i], R_i, proof, key)
