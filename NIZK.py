@@ -312,9 +312,9 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
     W.inplace_pow(1, key.p)
 
     hash_input = str(i) + tau_prime
-    hash_input += gmp_to_b64str(Ci)
+    hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
-    hash_input += gmp_to_b64str(W)
+    hash_input += utils.gmp_to_b64str(W)
     hash_input += R.export_b64str()
     hash_input = hash_input.replace(',','')
     hash_input = hash_input.encode('utf-8')
