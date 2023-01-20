@@ -3,8 +3,8 @@ from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from patetokens import utils
 
-TOTAL = 2
-THRESHOLD = 2
+TOTAL = 3
+THRESHOLD = 3
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -141,6 +141,7 @@ class FullKey(Key):
         if idx not in self.group_idxs:
             print("invalid idx")
             return "Error"
+        print(self.x_shares)
         veri_key = DistributedKey(self.y, idx, self.x_shares[idx], self.group_pks)
         return veri_key.export(False)
 
