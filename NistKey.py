@@ -3,8 +3,8 @@ from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from patetokens import utils
 
-TOTAL = 3
-THRESHOLD = 3
+TOTAL = 4
+THRESHOLD = 4
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -31,7 +31,7 @@ class Key:
         self.y = None
         self.group_idx = None
         self.group_pks = None
-            
+
     def from_json(self, json_keys):
         self.p = utils.b64str_to_gmp(json_keys['p'])
         self.q = utils.b64str_to_gmp(json_keys['q'])
@@ -41,7 +41,7 @@ class Key:
         self.group_pks = dict(map(lambda keyi: (keyi[0], utils.b64str_to_gmp(keyi[1])), json_keys['group-pks'].items()))
         if 'x' in json_keys.keys():
             self.x = utils.b64str_to_gmp(json_keys['x'])
-    	
+
     def export_keys(self, Public=True):
         json_keys = {
                 'p': utils.gmp_to_b64str(self.p),
@@ -61,7 +61,7 @@ class DistributedKey(Key):
         self.idx = idx
         self.x_share = x_share
         self.group_pks = group_pks
-        
+
     def from_json(self,json_keys):
         #super(DistributedKey, self).from_json(json_keys)
         self.p = utils.b64str_to_gmp(json_keys['p'])
@@ -80,7 +80,7 @@ class DistributedKey(Key):
         return json_keys
 
 
-        
+
 
 class FullKey(Key):
     def __init__(self, group_idxs):
@@ -117,7 +117,7 @@ class FullKey(Key):
         for share in secrets['shares']:
             (idx, share) = share.split("-")
             shares_dict[idx] = IntGMP.from_bytes(bytes.fromhex(share))
-        
+
         self.x_shares = shares_dict
         #FOR TEST
         #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
