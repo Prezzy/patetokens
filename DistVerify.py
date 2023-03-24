@@ -28,39 +28,50 @@ def round1(B,V,key):
     V3 = Cipher.Cipher(key=key)
     V3.encrypt(rand[4],rand[0],None,V.b)
 
-    return ([B,V,B1,V1,V2,V3],rand)
+    return ([B1,V1,V2,V3], rand)
+    #return ([B,V,B1,V1,V2,V3],rand)
     
-def round2(i, nonces, B, V, step1_responses, key):
+def round2(i, nonces, ciphers, B, V, key):
     yg = Cipher.Cipher(IntGMP(1), IntGMP(1), key=key)
     B_string = B.export_b64str() + V.export_b64str()
     V_string = ''
-    for idx in step1_responses:
-        yg.imul(step1_responses[idx]['ciphers'][0])
-        B_string += step1_responses[idx]['ciphers'][0].export_b64str()
-        V_string += step1_responses[idx]['ciphers'][1].export_b64str()
-        
-    indexs = list(nonces.keys())
-    indexs_int = list(map(int,indexs))
-    indexs_gmp = list(map(IntGMP, indexs_int))
+    indexs_gmp = []
+    print(ciphers)
+    for tup in ciphers:
+        yg.imul(tup[1])
+        B_string += tup[1].export_b64str()
+        print(tup[1].export_b64str())
+        V_string += tup[2].export_b64str()
+        indexs_gmp.append(IntGMP(tup[0]))
+       
+    #indexs = list(nonces.keys())
+    #indexs_int = list(map(int,indexs))
+    #indexs_gmp = list(map(IntGMP, indexs_int))
 
-    nonces = utils.dic_to_string(nonces)
+    #nonces = utils.dic_to_string(nonces)
 
-    tau_prime = nonces + B_string + V_string
+    tau2 = nonces + B_string + V_string
 
     coeffs = shamir.lagrange_coefficients(IntGMP(0), indexs_gmp, key.q)
 
-    a_i = coeffs[int(i)].__mul__(key.x_share)
-    a_i.inplace_pow(1, key.q)
-    C_bar = yg.b.__pow__(a_i,key.p)
+    ai = coeffs[int(i)].__mul__(key.x_share)
+    ai.inplace_pow(1, key.q)
+
+    C_bar = yg.b.__pow__(ai, key.p)
+
     zeta = utils.rand_felement_gmp(key)
-    R_i = Cipher.Cipher(key=key)
-    R_i.encrypt(zeta, a_i)
-    C = dict()
+
+    Ri = Cipher.Cipher(key=key)
+    Ri.encrypt(zeta, ai)
+
+    Ri_dict = {i:Ri}
+
+    C_dict = {}
     for idx in coeffs:
         pk_idx = key.group_pks[str(idx)]
-        C[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
+        C_dict[str(idx)] = pk_idx.__pow__(coeffs[idx], key.p)
 
-    return (tau_prime, C, R_i, a_i, zeta, yg, C_bar)
+    return (yg, tau2, ai, C_bar, zeta, Ri_dict, C_dict)
 
     #e, proof = proveS(i, tau_prime, C[i], R_i, [a_i, zeta], key)
     #result = verifyS(i, tau_prime, C[i], R_i, proof, key)
@@ -73,6 +84,9 @@ def round4(key, C_bars, y_bar):
     for C_bari in C_bars:
         C_acc.__imul__(C_bari)
         C_acc.inplace_pow(1, key.p)
+
+    print("C_mul {}:".format(C_acc))
+    print("y_bar {}:".format(y_bar))
 
     if C_acc.__eq__(y_bar):
         print("Accept")

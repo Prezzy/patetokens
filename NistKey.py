@@ -3,8 +3,8 @@ from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from patetokens import utils
 #hello
-TOTAL = 4
-THRESHOLD = 4
+TOTAL = 2
+THRESHOLD = 2
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -50,6 +50,8 @@ class Key:
                 'y': utils.gmp_to_b64str(self.y),
                 'group-pks' : dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.group_pks.items())),
                 }
+        #if not Public:
+        #    json_keys['x'] = utils.gmp_to_b64str(self.x)
 
         return json_keys
 
@@ -120,12 +122,12 @@ class FullKey(Key):
 
         self.x_shares = shares_dict
         #FOR TEST
-        #sh = shamir.to_hex(shamir.split_secret(key.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=key.q))
-        #print("key.x is {}".format(key.x.to_bytes()))
-        #print("sh is {}".format(sh))
-        #print("sh.from_hex {}".format(shamir.from_hex(sh)))
-        #secret = shamir.recover_secret(shamir.from_hex(sh))
-        #print("secret is {}".format(secret))
+        sh = shamir.to_hex(shamir.split_secret(self.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=self.q))
+        print("key.x is {}".format(self.x.to_bytes()))
+        print("sh is {}".format(sh))
+        print("sh.from_hex {}".format(shamir.from_hex(sh)))
+        secret = shamir.recover_secret(shamir.from_hex(sh))
+        print("secret is {}".format(secret))
 
     def gen_ver_pks(self):
         public_keys = {}
@@ -157,5 +159,6 @@ class FullKey(Key):
         json_keys = super(FullKey, self).export_keys(Public)
         json_keys['group-idxs'] = self.group_idxs
         if not Public:
+            json_keys['x'] = utils.gmp_to_b64str(self.x)
             json_keys['x-shares'] = dict(map(lambda keyi: (keyi[0], utils.gmp_to_b64str(keyi[1])), self.x_shares.items()))
         return json_keys

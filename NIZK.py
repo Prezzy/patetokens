@@ -26,7 +26,7 @@ def proveQ(nonces, public, private, key):
     V1.encrypt(rand[2],rand[1])
 
     hash_input = ""
-    hash_input += utils.dic_to_string(nonces)
+    hash_input += nonces
     hash_input += public[0].export_b64str()
     hash_input += public[1].export_b64str()
     hash_input += public[2].export_b64str()
@@ -88,7 +88,7 @@ def verifyQ(nonces, public, proof, key):
     V1.imul(V_temp)
 
     hash_input = ""
-    hash_input += utils.dic_to_string(nonces)
+    hash_input += nonces #utils.dic_to_string(nonces)
     hash_input += public[0].export_b64str()
     hash_input += public[1].export_b64str()
     hash_input += public[2].export_b64str()
@@ -261,7 +261,7 @@ def proveS(i, tau_prime, Ci, Ri, randomness, key):
     R = Cipher.Cipher(key=key)
     R.encrypt(rand[1], rand[0])
 
-    hash_input = str(i) + tau_prime
+    hash_input = i + tau_prime
     hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
     hash_input += utils.gmp_to_b64str(W)
@@ -311,7 +311,7 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
     W.__imul__(Ci_inv)
     W.inplace_pow(1, key.p)
 
-    hash_input = str(i) + tau_prime
+    hash_input = i + tau_prime
     hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
     hash_input += utils.gmp_to_b64str(W)
@@ -332,7 +332,7 @@ def verifyS(i, tau_prime, Ci, Ri, proof, key):
         return False
 
 
-def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
+def proveT(i, tau_prime, g_bar, C_bar, Ci, Ri, randomness, key):
 
     H6 = K12.new(custom = b'T')
 
@@ -347,9 +347,9 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
     R = Cipher.Cipher(key=key)
     R.encrypt(rand[1], rand[0])
 
-    hash_input = str(i) + tau_prime
+    hash_input = i + tau_prime
     hash_input += utils.gmp_to_b64str(g_bar)
-    hash_input += utils.gmp_to_b64str(C_bari)
+    hash_input += utils.gmp_to_b64str(C_bar)
     hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
     hash_input += utils.gmp_to_b64str(W_bar)
@@ -379,7 +379,7 @@ def proveT(i, tau_prime, g_bar, C_bari, Ci, Ri, randomness, key):
     return proof
 
 
-def verifyT(i, tau_prime, g_bar, C_bari, Ci, Ri, proof, key):
+def verifyT(i, tau_prime, g_bar, C_bar, Ci, Ri, proof, key):
 
     H6 = K12.new(custom = b'T')
 
@@ -397,7 +397,7 @@ def verifyT(i, tau_prime, g_bar, C_bari, Ci, Ri, proof, key):
     W_bar = g_bar.__pow__(z1, key.p)
     W = key.g.__pow__(z1, key.p)
 
-    C_bari_inv = C_bari.inverse(key.p)
+    C_bari_inv = C_bar.inverse(key.p)
     C_bari_inv.inplace_pow(e, key.p)
 
     Ci_inv = Ci.inverse(key.p)
@@ -409,9 +409,9 @@ def verifyT(i, tau_prime, g_bar, C_bari, Ci, Ri, proof, key):
     W.__imul__(Ci_inv)
     W.inplace_pow(1, key.p)
 
-    hash_input = str(i) + tau_prime
+    hash_input = i + tau_prime
     hash_input += utils.gmp_to_b64str(g_bar)
-    hash_input += utils.gmp_to_b64str(C_bari)
+    hash_input += utils.gmp_to_b64str(C_bar)
     hash_input += utils.gmp_to_b64str(Ci)
     hash_input += Ri.export_b64str()
     hash_input += utils.gmp_to_b64str(W_bar)

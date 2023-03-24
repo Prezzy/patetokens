@@ -24,10 +24,10 @@ def enc_pwd(pwd, key):
 
     Ec_test = Ec.exp(pwd)
 
-    print("Ec og ({},{})".format(Ec.a, Ec.b))
-    print("Ec test ({},{})".format(Ec_test.a, Ec_test.b))
+    #print("Ec og ({},{})".format(Ec.a, Ec.b))
+    #print("Ec test ({},{})".format(Ec_test.a, Ec_test.b))
 
-    print("direct ({},{})".format(a_1, b_1))
+    #print("direct ({},{})".format(a_1, b_1))
 
     return Ec
 
@@ -73,7 +73,7 @@ def compute_V(pwd, key):
     return (V,g_key)
 
 def generate_serialized_token(key, username, encpwd):
-    payload = {'username' : username, 'encpwd' : encpwd}
+    payload = {'username' : username, 'Enc' : encpwd}
     payload = json.dumps(payload)
     Token = jws.JWS(payload.encode('utf-8'))
     Token.add_signature(key, None, json_encode({"alg": "RS256"}))
@@ -98,7 +98,7 @@ def prep_token(token, key, pwd):
     payload = urlsafe_b64decode(payload + padding)
 
     payload = json.loads(payload)
-    encpwd_str = payload['encpwd']
+    encpwd_str = payload['Enc']
     
     encpwd = Cipher.Cipher.from_b64str(encpwd_str, key)
 
