@@ -2,9 +2,12 @@ import os
 from sslib import shamir
 from Crypto.Math._IntegerGMP import IntegerGMP as IntGMP
 from patetokens import utils
+from params import THRESHOLD, TOTAL
+
 #hello
-TOTAL = 2
-THRESHOLD = 2
+
+#TOTAL = 2
+#THRESHOLD = 2
 
 hex_string_p = ("0xFFFFFFFF FFFFFFFF C90FDAA2 2168C234 C4C6628B 80DC1CD1"
       "29024E08 8A67CC74 020BBEA6 3B139B22 514A0879 8E3404DD"
@@ -123,11 +126,11 @@ class FullKey(Key):
         self.x_shares = shares_dict
         #FOR TEST
         sh = shamir.to_hex(shamir.split_secret(self.x.to_bytes(), THRESHOLD, TOTAL, prime_mod=self.q))
-        print("key.x is {}".format(self.x.to_bytes()))
-        print("sh is {}".format(sh))
-        print("sh.from_hex {}".format(shamir.from_hex(sh)))
+        #print("key.x is {}".format(self.x.to_bytes()))
+        #print("sh is {}".format(sh))
+        #print("sh.from_hex {}".format(shamir.from_hex(sh)))
         secret = shamir.recover_secret(shamir.from_hex(sh))
-        print("secret is {}".format(secret))
+        #print("secret is {}".format(secret))
 
     def gen_ver_pks(self):
         public_keys = {}
@@ -141,9 +144,9 @@ class FullKey(Key):
 
     def export_veri_key(self, idx):
         if idx not in self.group_idxs:
-            print("invalid idx")
+            #print("invalid idx")
             return "Error"
-        print(self.x_shares)
+        #print(self.x_shares)
         veri_key = DistributedKey(self.y, idx, self.x_shares[idx], self.group_pks)
         return veri_key.export(False)
 

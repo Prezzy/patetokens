@@ -36,11 +36,11 @@ def round2(i, nonces, ciphers, B, V, key):
     B_string = B.export_b64str() + V.export_b64str()
     V_string = ''
     indexs_gmp = []
-    print(ciphers)
+    #print(ciphers)
     for tup in ciphers:
         yg.imul(tup[1])
         B_string += tup[1].export_b64str()
-        print(tup[1].export_b64str())
+        #print(tup[1].export_b64str())
         V_string += tup[2].export_b64str()
         indexs_gmp.append(IntGMP(tup[0]))
        
@@ -85,8 +85,8 @@ def round4(key, C_bars, y_bar):
         C_acc.__imul__(C_bari)
         C_acc.inplace_pow(1, key.p)
 
-    print("C_mul {}:".format(C_acc))
-    print("y_bar {}:".format(y_bar))
+    #print("C_mul {}:".format(C_acc))
+    #print("y_bar {}:".format(y_bar))
 
     if C_acc.__eq__(y_bar):
         print("Accept")
