@@ -1,0 +1,5 @@
+Required Dependencies:
+
+jwcrypto
+pycryptodome
+https://github.com/macsnoeren/python-p2p-network
